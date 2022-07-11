@@ -1,8 +1,9 @@
 from selene.support.shared import browser
-from selene import have
+from selene import have, command
 from selene.support.shared.jquery_style import s, ss
 from demoqa_tests.resourse import resourse
-from demoqa_tests.controls import TagsInput, Dropdown, Datepicker, Table
+from demoqa_tests.model.pages.student_registration_page import StudentRegistrationForm
+
 
 firstname = 'Anna'
 lastname = 'Hanna'
@@ -10,32 +11,35 @@ email = '1@test.ru'
 gender = 'Other'
 phonenumber = '1111111111'
 year = '2000'
-years = Datepicker(s('.react-datepicker__year-select'))
+years = StudentRegistrationForm(s('.react-datepicker__year-select'))
 month_str = 'April'
 # переменная month_int должна иметь значение (число месяца из переменной month_str минус 1)
 month_int = 3
-months = Datepicker(s('.react-datepicker__month-select'))
+months = StudentRegistrationForm(s('.react-datepicker__month-select'))
 # переменная day всегда должна быть обозначена двумя знаками: 01, 02, 15, 31
 day = '20'
-days = Datepicker(s(f'.react-datepicker__day--0{day}'))
+days = StudentRegistrationForm(s(f'.react-datepicker__day--0{day}'))
 subject = 'English'
 subject2 = 'Maths'
-subjects = TagsInput(s('#subjectsInput'))
+subjects = StudentRegistrationForm(s('#subjectsInput'))
 hobby = 'Sports'
 picture = '1.jpg'
 address = 'my room'
 state = 'NCR'
-states = Dropdown(s('#state'))
+states = StudentRegistrationForm(s('#state'))
 city = 'Delhi'
-cities = Dropdown(s('#city'))
-results = Table(s('.modal-content .table'))
-
+cities = StudentRegistrationForm(s('#city'))
+results = StudentRegistrationForm(s('.modal-content .table'))
+name = StudentRegistrationForm(s('#firstName'))
 
 # тест заполнения формы через установку значений вручную
 def test_setting_data_manual(browser_config):
+
     browser.open('/automation-practice-form').driver.maximize_window()
 
-    s('#firstName').type(firstname)
+
+    name.set_first_name(firstname)
+    #s('#firstName').type(firstname)
     s('#lastName').type(lastname)
     s('#userEmail').type(email)
     s('[for="gender-radio-3"]').click()
@@ -48,8 +52,8 @@ def test_setting_data_manual(browser_config):
     s('[for="hobbies-checkbox-1"]').click()
     s('#uploadPicture').send_keys(resourse(picture))
     s('#currentAddress').type(address)
-    states.set(option=state)
-    cities.set(option=city)
+    states.set_dropdown(option=state)
+    cities.set_dropdown(option=city)
     s('#submit').click()
 
     # Проверка с использованием Page Object

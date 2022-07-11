@@ -1,9 +1,9 @@
 from selene.support.shared import browser
-from selene import have, command
-from selene.support.shared.jquery_style import s, ss
+from selene import have
+from selene.support.shared.jquery_style import s
 from demoqa_tests.resourse import resourse
 from demoqa_tests.model.pages.student_registration_page import StudentRegistrationForm
-
+from demoqa_tests.model.utils.data import name, cities, results, years, months, subjects, states, surname, mail
 
 firstname = 'Anna'
 lastname = 'Hanna'
@@ -11,37 +11,28 @@ email = '1@test.ru'
 gender = 'Other'
 phonenumber = '1111111111'
 year = '2000'
-years = StudentRegistrationForm(s('.react-datepicker__year-select'))
 month_str = 'April'
 # переменная month_int должна иметь значение (число месяца из переменной month_str минус 1)
 month_int = 3
-months = StudentRegistrationForm(s('.react-datepicker__month-select'))
 # переменная day всегда должна быть обозначена двумя знаками: 01, 02, 15, 31
 day = '20'
 days = StudentRegistrationForm(s(f'.react-datepicker__day--0{day}'))
 subject = 'English'
 subject2 = 'Maths'
-subjects = StudentRegistrationForm(s('#subjectsInput'))
 hobby = 'Sports'
 picture = '1.jpg'
 address = 'my room'
 state = 'NCR'
-states = StudentRegistrationForm(s('#state'))
 city = 'Delhi'
-cities = StudentRegistrationForm(s('#city'))
-results = StudentRegistrationForm(s('.modal-content .table'))
-name = StudentRegistrationForm(s('#firstName'))
 
-# тест заполнения формы через установку значений вручную
+
+
 def test_setting_data_manual(browser_config):
-
     browser.open('/automation-practice-form').driver.maximize_window()
 
-
-    name.set_first_name(firstname)
-    #s('#firstName').type(firstname)
-    s('#lastName').type(lastname)
-    s('#userEmail').type(email)
+    name.set_value(firstname)
+    surname.set_value(lastname)
+    mail.set_value(email)
     s('[for="gender-radio-3"]').click()
     s('#userNumber').type(phonenumber)
     s('#dateOfBirthInput').click()
@@ -69,36 +60,4 @@ def test_setting_data_manual(browser_config):
     results.row(9).should(have.exact_texts('State and City', f'{state} {city}'))
 
 
-# тест заполнения формы через выбор значений из предложенных
-def test_select_data_from_given(browser_config):
-    browser.open('/automation-practice-form').driver.maximize_window()
 
-    s('#firstName').type(firstname)
-    s('#lastName').type(lastname)
-    s('#userEmail').type(email)
-    s('[for="gender-radio-3"]').click()
-    s('#userNumber').type(phonenumber)
-    s('#dateOfBirthInput').click()
-    years.select_year(option=year)
-    months.select_month(option=month_int)
-    days.select_day(option=day)
-    subjects.select_subject_from_list(to_type=subject)
-    s('[for="hobbies-checkbox-1"]').click()
-    s('#uploadPicture').send_keys(resourse(picture))
-    s('#currentAddress').type(address)
-    states.select(option=state)
-    cities.select(option=city)
-    s('#submit').click()
-
-    # Проверка без Page Object
-    ss('table tbody tr').should(have.texts(
-        f'{firstname} {lastname}',
-        f'{email}',
-        f'{gender}',
-        f'{phonenumber}',
-        f'{day} {month_str},{year}',
-        f'Subjects {subject}',
-        f'Hobbies {hobby}',
-        f'Picture {picture}',
-        f'Address {address}',
-        f'State and City {state} {city}'))

@@ -10,9 +10,10 @@ class StudentRegistrationForm:
         self.element = element
         self.first_name = s('#firstName')
         self.last_name = s('#lastName')
+        self.email = s('#userEmail')
         self.subjects = s('#subjectsInput')
 
-    def set_first_name(self, value: str):
+    def set_value(self, value: str):
         self.element.type(value)
 
     def select_subject_from_list(self, to_type: str):
@@ -57,3 +58,6 @@ class StudentRegistrationForm:
 
     def row(self, index):
         return self.element.all('tbody tr')[index].all('td')
+
+
+
